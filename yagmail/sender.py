@@ -156,11 +156,11 @@ class SMTP:
 
     @staticmethod
     def handle_password(user, password):
-        return handle_password(user, password)
+        pass
 
     @staticmethod
     def get_oauth_string(user, oauth2_info):
-        return get_oauth_string(user, oauth2_info)
+        pass
 
     def _login_oauth2(self, oauth2_info):
         pass

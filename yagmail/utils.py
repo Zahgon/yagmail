@@ -14,5 +14,4 @@ class inline(str):
 
 
 def find_user_home_path():
-    with open(os.path.expanduser("~/.yagmail")) as f:
-        return f.read().strip()
+    pass

@@ -104,10 +104,4 @@ def validate_email_with_regex(email_address):
     However, it could still very well be that the actual emailaddress has simply
     not be claimed by anyone (so then this function fails to devalidate).
     """
-    if not re.match(VALID_ADDRESS_REGEXP, email_address):
-        emsg = 'Emailaddress "{}" is not valid according to RFC 2822 standards'.format(
-            email_address)
-        raise YagInvalidEmailAddress(emsg)
-    # apart from the standard, I personally do not trust email addresses without dot.
-    if "." not in email_address and "localhost" not in email_address.lower():
-        raise YagInvalidEmailAddress("Missing dot in emailaddress")
+    pass
