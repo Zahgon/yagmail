@@ -20,8 +20,7 @@ PY3 = sys.version_info[0] > 2
 
 
 def dt_converter(o):
-    if isinstance(o, (datetime.date, datetime.datetime)):
-        return o.isoformat()
+    pass
 
 
 def serialize_object(content):

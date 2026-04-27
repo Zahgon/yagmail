@@ -75,13 +75,11 @@ class SMTP:
 
     @property
     def connection(self):
-        return smtplib.SMTP_SSL if self.ssl else smtplib.SMTP
+        pass
 
     @property
     def starttls(self):
-        if self.smtp_starttls is None:
-            return False if self.ssl else True
-        return self.smtp_starttls
+        pass
 
     def set_logging(self, log_level=logging.ERROR, file_path_name=None):
         """
@@ -98,7 +96,7 @@ class SMTP:
 
         lastly, a log_level of :py:class:`None` will make sure there is no I/O.
         """
-        self.log = get_logger(log_level, file_path_name)
+        pass
 
     def prepare_send(
         self,
@@ -113,30 +111,7 @@ class SMTP:
         message_id=None,
         group_messages=True,
     ):
-        addresses = resolve_addresses(self.user, self.useralias, to, cc, bcc)
-
-        if self.soft_email_validation:
-            for email_addr in addresses["recipients"]:
-                validate_email_with_regex(email_addr)
-
-        msg = prepare_message(
-            self.user,
-            self.useralias,
-            addresses,
-            subject,
-            contents,
-            attachments,
-            headers,
-            self.encoding,
-            prettify_html,
-            message_id,
-            group_messages,
-            self.dkim,
-        )
-
-        recipients = addresses["recipients"]
-        msg_strings = msg.as_string()
-        return recipients, msg_strings
+        pass
 
     def send(
         self,
@@ -153,81 +128,31 @@ class SMTP:
         group_messages=True,
     ):
         """ Use this to send an email with gmail"""
-        self.login()
-        recipients, msg_strings = self.prepare_send(
-            to,
-            subject,
-            contents,
-            attachments,
-            cc,
-            bcc,
-            headers,
-            prettify_html,
-            message_id,
-            group_messages,
-        )
-        if preview_only:
-            return recipients, msg_strings
-
-        return self._attempt_send(recipients, msg_strings)
+        pass
 
     def _attempt_send(self, recipients, msg_strings):
-        attempts = 0
-        while attempts < 3:
-            try:
-                result = self.smtp.sendmail(self.user, recipients, msg_strings)
-                self.log.info("Message sent to %s", recipients)
-                self.num_mail_sent += 1
-                return result
-            except smtplib.SMTPServerDisconnected as e:
-                self.log.error(e)
-                attempts += 1
-                time.sleep(attempts * 3)
-        self.unsent.append((recipients, msg_strings))
-        return False
+        pass
 
     def send_unsent(self):
         """
         Emails that were not being able to send will be stored in :attr:`self.unsent`.
         Use this function to attempt to send these again
         """
-        for i in range(len(self.unsent)):
-            recipients, msg_strings = self.unsent.pop(i)
-            self._attempt_send(recipients, msg_strings)
+        pass
 
     def close(self):
         """ Close the connection to the SMTP server """
-        self.is_closed = True
-        try:
-            self.smtp.quit()
-        except (TypeError, AttributeError, smtplib.SMTPServerDisconnected):
-            pass
+        pass
 
     def login(self):
-        if self.oauth2_file is not None:
-            self._login_oauth2(self.credentials)
-        else:
-            self._login(self.credentials)
+        pass
 
     def _login(self, password):
         """
         Login to the SMTP server using password. `login` only needs to be manually run when the
         connection to the SMTP server was closed by the user.
         """
-        self.smtp = self.connection(self.host, self.port, **self.kwargs)
-        self.smtp.set_debuglevel(self.debuglevel)
-        if self.starttls:
-            self.smtp.ehlo()
-            if self.starttls is True:
-                self.smtp.starttls()
-            else:
-                self.smtp.starttls(**self.starttls)
-            self.smtp.ehlo()
-        self.is_closed = False
-        if not self.smtp_skip_login:
-            password = self.handle_password(self.user, password)
-            self.smtp.login(self.user, password)
-        self.log.info("Connected to SMTP @ %s:%s as %s", self.host, self.port, self.user)
+        pass
 
     @staticmethod
     def handle_password(user, password):
@@ -238,22 +163,11 @@ class SMTP:
         return get_oauth_string(user, oauth2_info)
 
     def _login_oauth2(self, oauth2_info):
-        if "email_address" in oauth2_info:
-            oauth2_info.pop("email_address")
-        self.smtp = self.connection(self.host, self.port, **self.kwargs)
-        try:
-            self.smtp.set_debuglevel(self.debuglevel)
-        except AttributeError:
-            pass
-        auth_string = self.get_oauth_string(self.user, oauth2_info)
-        self.smtp.ehlo(oauth2_info["google_client_id"])
-        if self.starttls is True:
-            self.smtp.starttls()
-        self.smtp.docmd("AUTH", "XOAUTH2 " + auth_string)
+        pass
 
     def feedback(self, message="Awesome features! You made my day! How can I contribute?"):
         """ Most important function. Please send me feedback :-) """
-        self.send("kootenpv@gmail.com", "Yagmail feedback", message)
+        pass
 
     def __del__(self):
         try:
